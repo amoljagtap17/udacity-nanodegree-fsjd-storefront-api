@@ -1,6 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
-import jwt from 'jsonwebtoken'
-import { User } from '../models/user'
+import { getDecodedToken } from '../utils/utils'
 
 const tokenSecret: string = process.env.TOKEN_SECRET!
 
@@ -10,15 +9,12 @@ export const verifyAuthToken = (
   next: NextFunction
 ) => {
   try {
-    const authorizationHeader = req.headers.authorization!
-    const token = authorizationHeader.split(' ')[1]
-    const decoded = jwt.verify(token, tokenSecret)
+    const decodedToken = getDecodedToken(req.headers.authorization!)
 
     if (
       req.method === 'PUT' &&
       req.url.includes('/users') &&
-      // @ts-ignore
-      decoded.user.id !== parseInt(req.params.id)
+      decodedToken.user.id !== parseInt(req.params.id)
     ) {
       res.status(401)
       res.json('User id does not match!')
