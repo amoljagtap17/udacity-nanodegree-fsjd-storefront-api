@@ -31,6 +31,22 @@ export class UserStore {
     }
   }
 
+  async show(id: string): Promise<Omit<User, 'password'>> {
+    try {
+      const sql = 'SELECT * FROM users WHERE id=($1)'
+      // @ts-ignore
+      const conn = await Client.connect()
+
+      const result = await conn.query(sql, [id])
+
+      conn.release()
+
+      return result.rows[0]
+    } catch (err) {
+      throw new Error(`Could not find user ${id}. Error: ${err}`)
+    }
+  }
+
   async create(u: Omit<User, 'id'>): Promise<Omit<User, 'password'>> {
     try {
       // @ts-ignore

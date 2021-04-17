@@ -8,8 +8,23 @@ const store = new UserStore()
 const tokenSecret: string = process.env.TOKEN_SECRET!
 
 const index = async (_req: Request, res: Response) => {
-  const users = await store.index()
-  res.json(users)
+  try {
+    const users = await store.index()
+    res.json(users)
+  } catch (err) {
+    res.status(500)
+    res.json(err)
+  }
+}
+
+const show = async (req: Request, res: Response) => {
+  try {
+    const user = await store.show(req.body.id)
+    res.json(user)
+  } catch (err) {
+    res.status(500)
+    res.json(err)
+  }
 }
 
 const create = async (req: Request, res: Response) => {
@@ -36,5 +51,7 @@ const create = async (req: Request, res: Response) => {
 
 export const users_routes = (app: express.Application) => {
   app.get('/users', verifyAuthToken, index)
+  app.get('/users/:id', verifyAuthToken, show)
+  app.post('/create-root-user', create)
   app.post('/users', verifyAuthToken, create)
 }
