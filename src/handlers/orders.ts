@@ -19,8 +19,15 @@ const create = async (req: Request, res: Response) => {
 }
 
 const update = async (req: Request, res: Response) => {
-  const { status } = req.body
+  const status: string = req.body.status
   const id = parseInt(req.params.id)
+
+  if (status === STATUS.open || status === STATUS.complete) {
+  } else {
+    res.status(400)
+    res.json({ error: 'status is invalid' })
+    return
+  }
 
   try {
     const decodedToken = getDecodedToken(req.headers.authorization!)
@@ -32,6 +39,12 @@ const update = async (req: Request, res: Response) => {
 
     const updatedOrder = await store.update(order)
 
+    if (!updatedOrder) {
+      res.status(400)
+      res.json({ error: `order with id ${id} not found` })
+      return
+    }
+
     res.json(updatedOrder)
   } catch (error) {
     res.status(500)
@@ -41,9 +54,16 @@ const update = async (req: Request, res: Response) => {
 
 const destroy = async (req: Request, res: Response) => {
   try {
-    const deleted = await store.delete(parseInt(req.params.id))
+    const id = parseInt(req.params.id)
+    const deletedOrder = await store.delete(id)
 
-    res.json(deleted)
+    if (deletedOrder.length === 0) {
+      res.status(400)
+      res.json({ error: `order with id ${id} not found` })
+      return
+    }
+
+    res.json(deletedOrder)
   } catch (error) {
     res.status(500)
     res.json({ error: error.toString() })

@@ -54,17 +54,19 @@ export class OrderStore {
     }
   }
 
-  async delete(id: number): Promise<string> {
+  async delete(id: number): Promise<Order[]> {
     try {
-      const sql = 'DELETE FROM orders WHERE id = $1'
+      const sql = 'DELETE FROM orders WHERE id = $1 RETURNING *'
       // @ts-ignore
       const conn = await client.connect()
 
-      await conn.query(sql, [id])
+      const result = await conn.query(sql, [id])
+
+      const deletedOrder: Order[] = result.rows
 
       conn.release()
 
-      return 'Order Deleted'
+      return deletedOrder
     } catch (err) {
       throw new Error(`unable to delete order with id ${id}. Error: ${err}`)
     }
