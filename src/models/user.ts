@@ -78,6 +78,37 @@ export class UserStore {
     }
   }
 
+  async update(u: User): Promise<Omit<User, 'password'>> {
+    try {
+      const sql =
+        'UPDATE users SET firstname = $2, lastname = $3, username = $4, password = $5 WHERE id = $1 RETURNING *'
+      // @ts-ignore
+      const conn = await client.connect()
+
+      const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds))
+
+      const result = await conn.query(sql, [
+        u.id,
+        u.firstName,
+        u.lastName,
+        u.userName,
+        hash,
+      ])
+
+      const user = result.rows[0]
+
+      conn.release()
+
+      delete user.password
+
+      return user
+    } catch (err) {
+      throw new Error(
+        `unable to update user (${u.firstName} ${u.lastName}): ${err}`
+      )
+    }
+  }
+
   async delete(id: number): Promise<string> {
     try {
       const sql = 'DELETE FROM users WHERE id=($1)'

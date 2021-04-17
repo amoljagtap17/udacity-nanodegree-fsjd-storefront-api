@@ -49,6 +49,25 @@ const create = async (req: Request, res: Response) => {
   }
 }
 
+const update = async (req: Request, res: Response) => {
+  const user: User = {
+    id: parseInt(req.params.id),
+    firstName: req.body.firstName,
+    lastName: req.body.lastName,
+    userName: req.body.userName,
+    password: req.body.password,
+  }
+
+  try {
+    const updatedUser = await store.update(user)
+
+    res.json(updatedUser)
+  } catch (error) {
+    res.status(400)
+    res.json({ error: error.toString() })
+  }
+}
+
 const destroy = async (req: Request, res: Response) => {
   try {
     const deleted = await store.delete(parseInt(req.params.id))
@@ -83,5 +102,6 @@ export const users_routes = (app: express.Application) => {
   app.post('/create-root-user', create)
   app.post('/users/login', authenticate)
   app.post('/users', verifyAuthToken, create)
+  app.put('/users/:id', verifyAuthToken, update)
   app.delete('/users/:id', verifyAuthToken, destroy)
 }
