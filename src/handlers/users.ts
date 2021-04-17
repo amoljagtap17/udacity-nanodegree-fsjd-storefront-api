@@ -7,11 +7,12 @@ const store = new UserStore()
 const tokenSecret: string = process.env.TOKEN_SECRET!
 
 const create = async (req: Request, res: Response) => {
-  const { firstName, lastName, password } = req.body
+  const { firstName, lastName, userName, password } = req.body
 
   const user: Omit<User, 'id'> = {
     firstName,
     lastName,
+    userName,
     password,
   }
 
