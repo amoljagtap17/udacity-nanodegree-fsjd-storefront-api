@@ -14,8 +14,12 @@ export const verifyAuthToken = (
     const token = authorizationHeader.split(' ')[1]
     const decoded = jwt.verify(token, tokenSecret)
 
-    // @ts-ignore
-    if (req.method === 'PUT' && decoded.user.id !== parseInt(req.params.id)) {
+    if (
+      req.method === 'PUT' &&
+      req.url.includes('/users') &&
+      // @ts-ignore
+      decoded.user.id !== parseInt(req.params.id)
+    ) {
       res.status(401)
       res.json('User id does not match!')
       return
