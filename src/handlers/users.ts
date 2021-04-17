@@ -13,17 +13,17 @@ const index = async (_req: Request, res: Response) => {
     res.json(users)
   } catch (error) {
     res.status(500)
-    res.json({ error })
+    res.json({ error: error.toString() })
   }
 }
 
 const show = async (req: Request, res: Response) => {
   try {
-    const user = await store.show(req.body.id)
+    const user = await store.show(parseInt(req.params.id))
     res.json(user)
   } catch (error) {
     res.status(500)
-    res.json({ error })
+    res.json({ error: error.toString() })
   }
 }
 
@@ -45,17 +45,17 @@ const create = async (req: Request, res: Response) => {
     res.json(token)
   } catch (error) {
     res.status(400)
-    res.json({ error })
+    res.json({ error: error.toString() })
   }
 }
 
 const destroy = async (req: Request, res: Response) => {
   try {
-    const deleted = await store.delete(req.body.id)
+    const deleted = await store.delete(parseInt(req.params.id))
     res.json(deleted)
   } catch (error) {
     res.status(400)
-    res.json({ error })
+    res.json({ error: error.toString() })
   }
 }
 

@@ -18,8 +18,8 @@ export class UserStore {
   async index(): Promise<Omit<User, 'password'>> {
     try {
       // @ts-ignore
-      const conn = await Client.connect()
-      const sql = 'SELECT * FROM users'
+      const conn = await client.connect()
+      const sql = 'SELECT id, firstname, lastname, username FROM users'
 
       const result = await conn.query(sql)
 
@@ -27,23 +27,24 @@ export class UserStore {
 
       return result.rows
     } catch (err) {
-      throw new Error(`Could not get users. Error: ${err}`)
+      throw new Error(`DB error retrieving users. Error: ${err}`)
     }
   }
 
-  async show(id: string): Promise<Omit<User, 'password'>> {
+  async show(id: number): Promise<Omit<User, 'password'>> {
     try {
-      const sql = 'SELECT * FROM users WHERE id=($1)'
+      const sql =
+        'SELECT id, firstname, lastname, username FROM users WHERE id=($1)'
       // @ts-ignore
-      const conn = await Client.connect()
+      const conn = await client.connect()
 
       const result = await conn.query(sql, [id])
 
       conn.release()
 
-      return result.rows[0]
+      return result.rows[0] || {}
     } catch (err) {
-      throw new Error(`Could not find user ${id}. Error: ${err}`)
+      throw new Error(`DB error retrieving user with id ${id}. Error: ${err}`)
     }
   }
 
@@ -77,21 +78,19 @@ export class UserStore {
     }
   }
 
-  async delete(id: string): Promise<Omit<User, 'password'>> {
+  async delete(id: number): Promise<string> {
     try {
       const sql = 'DELETE FROM users WHERE id=($1)'
       // @ts-ignore
-      const conn = await Client.connect()
+      const conn = await client.connect()
 
-      const result = await conn.query(sql, [id])
-
-      const user = result.rows[0]
+      await conn.query(sql, [id])
 
       conn.release()
 
-      return user
+      return 'User Deleted'
     } catch (err) {
-      throw new Error(`Could not delete user ${id}. Error: ${err}`)
+      throw new Error(`DB error deleting user with id ${id}. Error: ${err}`)
     }
   }
 }
