@@ -40,7 +40,12 @@ const create = async (req: Request, res: Response) => {
   try {
     const newUser = await store.create(user)
 
-    const token = jwt.sign({ user: newUser }, tokenSecret)
+    const { id, firstName, lastName, userName } = newUser
+
+    const token = jwt.sign(
+      { user: { id, firstName, lastName, userName } },
+      tokenSecret
+    )
 
     res.json(token)
   } catch (error) {
@@ -71,6 +76,7 @@ const update = async (req: Request, res: Response) => {
 const destroy = async (req: Request, res: Response) => {
   try {
     const deleted = await store.delete(parseInt(req.params.id))
+
     res.json(deleted)
   } catch (error) {
     res.status(400)
@@ -87,7 +93,12 @@ const authenticate = async (req: Request, res: Response) => {
   try {
     const u = await store.authenticate(user.userName, user.password)
 
-    const token = jwt.sign({ user: u }, tokenSecret)
+    const { id, firstName, lastName, userName } = u
+
+    const token = jwt.sign(
+      { user: { id, firstName, lastName, userName } },
+      tokenSecret
+    )
 
     res.json(token)
   } catch (error) {

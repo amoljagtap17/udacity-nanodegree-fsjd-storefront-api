@@ -15,40 +15,44 @@ const pepper: string = BCRYPT_PASSWORD!
 const saltRounds: string = SALT_ROUNDS!
 
 export class UserStore {
-  async index(): Promise<Omit<User, 'password'>> {
+  async index(): Promise<User[]> {
     try {
-      const sql = 'SELECT id, firstname, lastname, username FROM users'
+      const sql = 'SELECT * FROM users'
       // @ts-ignore
       const conn = await client.connect()
 
       const result = await conn.query(sql)
 
+      const users: User[] = result.rows
+
       conn.release()
 
-      return result.rows
+      return users
     } catch (err) {
       throw new Error(`DB error retrieving users. Error: ${err}`)
     }
   }
 
-  async show(id: number): Promise<Omit<User, 'password'>> {
+  async show(id: number): Promise<User> {
     try {
       const sql =
-        'SELECT id, firstname, lastname, username FROM users WHERE id=($1)'
+        'SELECT id, firstname, lastname, username, password FROM users WHERE id=($1)'
       // @ts-ignore
       const conn = await client.connect()
 
       const result = await conn.query(sql, [id])
 
+      const user: User = result.rows[0]
+
       conn.release()
 
-      return result.rows[0] || {}
+      return user
     } catch (err) {
       throw new Error(`DB error retrieving user with id ${id}. Error: ${err}`)
     }
   }
 
-  async create(u: Omit<User, 'id'>): Promise<Omit<User, 'password'>> {
+  async create(u: Omit<User, 'id'>): Promise<User> {
     try {
       const sql =
         'INSERT INTO users (firstname, lastname, username, password) VALUES($1, $2, $3, $4) RETURNING *'
@@ -64,11 +68,9 @@ export class UserStore {
         hash,
       ])
 
-      const user = result.rows[0]
+      const user: User = result.rows[0]
 
       conn.release()
-
-      delete user.password
 
       return user
     } catch (err) {
@@ -78,7 +80,7 @@ export class UserStore {
     }
   }
 
-  async update(u: User): Promise<Omit<User, 'password'>> {
+  async update(u: User): Promise<User> {
     try {
       const sql =
         'UPDATE users SET firstname = $2, lastname = $3, username = $4, password = $5 WHERE id = $1 RETURNING *'
@@ -95,11 +97,9 @@ export class UserStore {
         hash,
       ])
 
-      const user = result.rows[0]
+      const user: User = result.rows[0]
 
       conn.release()
-
-      delete user.password
 
       return user
     } catch (err) {
@@ -125,10 +125,7 @@ export class UserStore {
     }
   }
 
-  async authenticate(
-    userName: string,
-    password: string
-  ): Promise<Omit<User, 'password'>> {
+  async authenticate(userName: string, password: string): Promise<User> {
     try {
       const sql = 'SELECT * FROM users WHERE username=($1)'
       // @ts-ignore
@@ -137,11 +134,9 @@ export class UserStore {
       const result = await conn.query(sql, [userName])
 
       if (result.rows.length) {
-        const user = result.rows[0]
+        const user: User = result.rows[0]
 
         if (bcrypt.compareSync(password + pepper, user.password)) {
-          delete user.password
-
           return user
         }
       }
