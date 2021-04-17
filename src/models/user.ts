@@ -17,9 +17,9 @@ const saltRounds: string = SALT_ROUNDS!
 export class UserStore {
   async index(): Promise<Omit<User, 'password'>> {
     try {
+      const sql = 'SELECT id, firstname, lastname, username FROM users'
       // @ts-ignore
       const conn = await client.connect()
-      const sql = 'SELECT id, firstname, lastname, username FROM users'
 
       const result = await conn.query(sql)
 
@@ -50,10 +50,10 @@ export class UserStore {
 
   async create(u: Omit<User, 'id'>): Promise<Omit<User, 'password'>> {
     try {
-      // @ts-ignore
-      const conn = await client.connect()
       const sql =
         'INSERT INTO users (firstname, lastname, username, password) VALUES($1, $2, $3, $4) RETURNING *'
+      // @ts-ignore
+      const conn = await client.connect()
 
       const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds))
 
@@ -92,5 +92,34 @@ export class UserStore {
     } catch (err) {
       throw new Error(`DB error deleting user with id ${id}. Error: ${err}`)
     }
+  }
+
+  async authenticate(
+    userName: string,
+    password: string
+  ): Promise<Omit<User, 'password'>> {
+    try {
+      const sql = 'SELECT * FROM users WHERE username=($1)'
+      // @ts-ignore
+      const conn = await client.connect()
+
+      const result = await conn.query(sql, [userName])
+
+      if (result.rows.length) {
+        const user = result.rows[0]
+
+        if (bcrypt.compareSync(password + pepper, user.password)) {
+          delete user.password
+
+          return user
+        }
+      }
+    } catch (err) {
+      throw new Error(
+        `DB error checking user with username ${userName}. Error: ${err}`
+      )
+    }
+
+    throw new Error(`Incorrect credentials.`)
   }
 }

@@ -59,10 +59,29 @@ const destroy = async (req: Request, res: Response) => {
   }
 }
 
+const authenticate = async (req: Request, res: Response) => {
+  const user = {
+    userName: req.body.userName,
+    password: req.body.password,
+  }
+
+  try {
+    const u = await store.authenticate(user.userName, user.password)
+
+    const token = jwt.sign({ user: u }, tokenSecret)
+
+    res.json(token)
+  } catch (error) {
+    res.status(401)
+    res.json({ error: error.toString() })
+  }
+}
+
 export const users_routes = (app: express.Application) => {
   app.get('/users', verifyAuthToken, index)
   app.get('/users/:id', verifyAuthToken, show)
   app.post('/create-root-user', create)
+  app.post('/users/login', authenticate)
   app.post('/users', verifyAuthToken, create)
   app.delete('/users/:id', verifyAuthToken, destroy)
 }
