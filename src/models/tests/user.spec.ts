@@ -1,16 +1,10 @@
-import bcrypt from 'bcrypt'
-import { User, UserStore } from '../user'
+import { UserStore } from '../user'
 
 const store = new UserStore()
 
 const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env
 const pepper: string = BCRYPT_PASSWORD!
 const saltRounds: string = SALT_ROUNDS!
-
-const password = 'test@password'
-const updatedPassword = 'newtest@password'
-const hash = (password: string) =>
-  bcrypt.hashSync(password + pepper, parseInt(saltRounds))
 
 describe('User Model', () => {
   it('should have an index method', () => {
@@ -35,45 +29,65 @@ describe('User Model', () => {
 
   it('create method should add a new user', async () => {
     const result = await store.create({
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      userName: 'User Name',
-      password,
+      firstname: 'First Name',
+      lastname: 'Last Name',
+      username: 'User Name',
+      password: 'test@password',
     })
 
-    expect(result).toEqual({
-      id: 1,
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      userName: 'User Name',
-      password: hash(password),
-    })
+    expect(result).toEqual(
+      jasmine.objectContaining({
+        id: 1,
+        firstname: 'First Name',
+        lastname: 'Last Name',
+        username: 'User Name',
+      })
+    )
   })
 
   it('index method should return a list of users', async () => {
     const result = await store.index()
 
-    expect(result).toEqual([
-      {
+    expect(result[0]).toEqual(
+      jasmine.objectContaining({
         id: 1,
-        firstName: 'First Name',
-        lastName: 'Last Name',
-        userName: 'User Name',
-        password: hash(password),
-      },
-    ])
+        firstname: 'First Name',
+        lastname: 'Last Name',
+        username: 'User Name',
+      })
+    )
   })
 
   it('show method should return the correct user', async () => {
     const result = await store.show(1)
 
-    expect(result).toEqual({
+    expect(result).toEqual(
+      jasmine.objectContaining({
+        id: 1,
+        firstname: 'First Name',
+        lastname: 'Last Name',
+        username: 'User Name',
+      })
+    )
+  })
+
+  it('update method should update the existing user', async () => {
+    const result = await store.update({
       id: 1,
-      firstName: 'First Name',
-      lastName: 'Last Name',
-      userName: 'User Name',
-      password: hash(password),
+      firstname: 'Updated First Name',
+      lastname: 'Updated Last Name',
+      username: 'Updated User Name',
+      password: 'updated@password',
     })
+
+    expect(result).toEqual(
+      jasmine.objectContaining({
+        id: 1,
+        firstname: 'Updated First Name',
+        lastname: 'Updated Last Name',
+        username: 'Updated User Name',
+      })
+    )
   })
 
   it('delete method should remove the user', async () => {
@@ -82,23 +96,5 @@ describe('User Model', () => {
     const result = await store.index()
 
     expect(result).toEqual([])
-  })
-
-  it('update method should update the existing user', async () => {
-    const result = await store.update({
-      id: 1,
-      firstName: 'Updated First Name',
-      lastName: 'Updated Last Name',
-      userName: 'Updated User Name',
-      password: updatedPassword,
-    })
-
-    expect(result).toEqual({
-      id: 1,
-      firstName: 'Updated First Name',
-      lastName: 'Updated Last Name',
-      userName: 'Updated User Name',
-      password: hash(updatedPassword),
-    })
   })
 })

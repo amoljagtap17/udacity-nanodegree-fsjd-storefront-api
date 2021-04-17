@@ -4,9 +4,9 @@ import { client } from '../database'
 
 export type User = {
   id: number
-  firstName: string
-  lastName: string
-  userName: string
+  firstname: string
+  lastname: string
+  username: string
   password: string
 }
 
@@ -62,9 +62,9 @@ export class UserStore {
       const hash = bcrypt.hashSync(u.password + pepper, parseInt(saltRounds))
 
       const result = await conn.query(sql, [
-        u.firstName,
-        u.lastName,
-        u.userName,
+        u.firstname,
+        u.lastname,
+        u.username,
         hash,
       ])
 
@@ -75,7 +75,7 @@ export class UserStore {
       return user
     } catch (err) {
       throw new Error(
-        `unable to create user (${u.firstName} ${u.lastName}): ${err}`
+        `unable to create user (${u.firstname} ${u.lastname}): ${err}`
       )
     }
   }
@@ -91,9 +91,9 @@ export class UserStore {
 
       const result = await conn.query(sql, [
         u.id,
-        u.firstName,
-        u.lastName,
-        u.userName,
+        u.firstname,
+        u.lastname,
+        u.username,
         hash,
       ])
 
@@ -104,7 +104,7 @@ export class UserStore {
       return user
     } catch (err) {
       throw new Error(
-        `unable to update user (${u.firstName} ${u.lastName}): ${err}`
+        `unable to update user (${u.firstname} ${u.lastname}): ${err}`
       )
     }
   }
@@ -125,13 +125,13 @@ export class UserStore {
     }
   }
 
-  async authenticate(userName: string, password: string): Promise<User> {
+  async authenticate(username: string, password: string): Promise<User> {
     try {
       const sql = 'SELECT * FROM users WHERE username=($1)'
       // @ts-ignore
       const conn = await client.connect()
 
-      const result = await conn.query(sql, [userName])
+      const result = await conn.query(sql, [username])
 
       if (result.rows.length) {
         const user: User = result.rows[0]
@@ -142,7 +142,7 @@ export class UserStore {
       }
     } catch (err) {
       throw new Error(
-        `DB error checking user with username ${userName}. Error: ${err}`
+        `DB error checking user with username ${username}. Error: ${err}`
       )
     }
 

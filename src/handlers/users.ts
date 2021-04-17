@@ -28,22 +28,22 @@ const show = async (req: Request, res: Response) => {
 }
 
 const create = async (req: Request, res: Response) => {
-  const { firstName, lastName, userName, password } = req.body
+  const { firstname, lastname, username, password } = req.body
 
   const user: Omit<User, 'id'> = {
-    firstName,
-    lastName,
-    userName,
+    firstname,
+    lastname,
+    username,
     password,
   }
 
   try {
     const newUser = await store.create(user)
 
-    const { id, firstName, lastName, userName } = newUser
+    const { id, firstname, lastname, username } = newUser
 
     const token = jwt.sign(
-      { user: { id, firstName, lastName, userName } },
+      { user: { id, firstname, lastname, username } },
       tokenSecret
     )
 
@@ -55,12 +55,14 @@ const create = async (req: Request, res: Response) => {
 }
 
 const update = async (req: Request, res: Response) => {
+  const { firstname, lastname, username, password } = req.body
+  const id = parseInt(req.params.id)
   const user: User = {
-    id: parseInt(req.params.id),
-    firstName: req.body.firstName,
-    lastName: req.body.lastName,
-    userName: req.body.userName,
-    password: req.body.password,
+    id,
+    firstname,
+    lastname,
+    username,
+    password,
   }
 
   try {
@@ -85,18 +87,17 @@ const destroy = async (req: Request, res: Response) => {
 }
 
 const authenticate = async (req: Request, res: Response) => {
-  const user = {
-    userName: req.body.userName,
-    password: req.body.password,
-  }
+  const { username, password } = req.body
+
+  const user: { username: string; password: string } = { username, password }
 
   try {
-    const u = await store.authenticate(user.userName, user.password)
+    const u: User = await store.authenticate(user.username, user.password)
 
-    const { id, firstName, lastName, userName } = u
+    const { id, firstname, lastname, username } = u
 
     const token = jwt.sign(
-      { user: { id, firstName, lastName, userName } },
+      { user: { id, firstname, lastname, username } },
       tokenSecret
     )
 
