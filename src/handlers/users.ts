@@ -11,9 +11,9 @@ const index = async (_req: Request, res: Response) => {
   try {
     const users = await store.index()
     res.json(users)
-  } catch (err) {
+  } catch (error) {
     res.status(500)
-    res.json(err)
+    res.json({ error })
   }
 }
 
@@ -21,9 +21,9 @@ const show = async (req: Request, res: Response) => {
   try {
     const user = await store.show(req.body.id)
     res.json(user)
-  } catch (err) {
+  } catch (error) {
     res.status(500)
-    res.json(err)
+    res.json({ error })
   }
 }
 
@@ -43,9 +43,19 @@ const create = async (req: Request, res: Response) => {
     const token = jwt.sign({ user: newUser }, tokenSecret)
 
     res.json(token)
-  } catch (err) {
+  } catch (error) {
     res.status(400)
-    res.json(err + user)
+    res.json({ error })
+  }
+}
+
+const destroy = async (req: Request, res: Response) => {
+  try {
+    const deleted = await store.delete(req.body.id)
+    res.json(deleted)
+  } catch (error) {
+    res.status(400)
+    res.json({ error })
   }
 }
 
@@ -54,4 +64,5 @@ export const users_routes = (app: express.Application) => {
   app.get('/users/:id', verifyAuthToken, show)
   app.post('/create-root-user', create)
   app.post('/users', verifyAuthToken, create)
+  app.delete('/users/:id', verifyAuthToken, destroy)
 }
