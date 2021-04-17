@@ -1,10 +1,16 @@
 import express, { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { User, UserStore } from '../models/user'
+import { verifyAuthToken } from '../middlewares/auth'
 
 const store = new UserStore()
 
 const tokenSecret: string = process.env.TOKEN_SECRET!
+
+const index = async (_req: Request, res: Response) => {
+  const users = await store.index()
+  res.json(users)
+}
 
 const create = async (req: Request, res: Response) => {
   const { firstName, lastName, userName, password } = req.body
@@ -29,5 +35,6 @@ const create = async (req: Request, res: Response) => {
 }
 
 export const users_routes = (app: express.Application) => {
-  app.post('/users', create)
+  app.get('/users', verifyAuthToken, index)
+  app.post('/users', verifyAuthToken, create)
 }
