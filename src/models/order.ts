@@ -80,7 +80,7 @@ export class OrderStore {
     try {
       const ordersql = 'SELECT * FROM orders WHERE id=($1)'
       //@ts-ignore
-      const conn = await Client.connect()
+      const conn = await client.connect()
 
       const result = await conn.query(ordersql, [orderId])
 
@@ -101,7 +101,7 @@ export class OrderStore {
       const sql =
         'INSERT INTO order_products (quantity, order_id, product_id) VALUES($1, $2, $3) RETURNING *'
       //@ts-ignore
-      const conn = await Client.connect()
+      const conn = await client.connect()
 
       const result = await conn.query(sql, [quantity, orderId, productId])
 

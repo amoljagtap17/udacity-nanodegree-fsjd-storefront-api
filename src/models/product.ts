@@ -104,4 +104,28 @@ export class ProductStore {
       throw new Error(`DB error deleting product with id ${id}. Error: ${err}`)
     }
   }
+
+  async getProductsByOrderId(
+    userId: number,
+    orderId: number
+  ): Promise<Product[]> {
+    try {
+      const sql =
+        'SELECT p.id, p.name, p.price, p.category, op.quantity FROM products p INNER JOIN order_products op ON p.id = op.product_id INNER JOIN orders o ON o.id = op.order_id WHERE o.user_id = $1 AND op.order_id = $2;'
+      // @ts-ignore
+      const conn = await client.connect()
+
+      const result = await conn.query(sql, [userId, orderId])
+
+      const products: Product[] = result.rows
+
+      conn.release()
+
+      return products
+    } catch (err) {
+      throw new Error(
+        `DB error retrieving products (${userId} ${orderId}). Error: ${err}`
+      )
+    }
+  }
 }

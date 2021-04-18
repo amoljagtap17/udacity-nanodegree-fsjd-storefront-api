@@ -74,10 +74,29 @@ const destroy = async (req: Request, res: Response) => {
   }
 }
 
+const getProductsByOrderId = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId)
+  const orderId = parseInt(req.params.orderId)
+
+  try {
+    const products = await store.getProductsByOrderId(userId, orderId)
+
+    res.json(products)
+  } catch (error) {
+    res.status(500)
+    res.json({ error: error.toString() })
+  }
+}
+
 export const products_routes = (app: express.Application) => {
   app.get('/products', index)
   app.get('/products/:id', show)
   app.post('/products', verifyAuthToken, create)
   app.put('/products/:id', verifyAuthToken, update)
   app.delete('/products/:id', verifyAuthToken, destroy)
+  app.get(
+    '/users/:userId/orders/:orderId/products',
+    verifyAuthToken,
+    getProductsByOrderId
+  )
 }
