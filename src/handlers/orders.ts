@@ -65,8 +65,24 @@ const destroy = async (req: Request, res: Response) => {
   }
 }
 
+const addProduct = async (req: Request, res: Response) => {
+  const orderId: number = parseInt(req.params.id)
+  const productId: number = parseInt(req.body.productId)
+  const quantity: number = parseInt(req.body.quantity)
+
+  try {
+    const addedProduct = await store.addProduct(quantity, orderId, productId)
+
+    res.json(addedProduct)
+  } catch (error) {
+    res.status(500)
+    res.json({ error: error.toString() })
+  }
+}
+
 export const orders_routes = (app: express.Application) => {
   app.post('/orders', verifyAuthToken, create)
   app.put('/orders/:id', verifyAuthToken, update)
   app.delete('/orders/:id', verifyAuthToken, destroy)
+  app.post('/orders/:id/products', verifyAuthToken, addProduct)
 }
