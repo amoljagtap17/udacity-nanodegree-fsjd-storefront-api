@@ -29,7 +29,7 @@ export class ProductStore {
 
   async show(id: number): Promise<Product> {
     try {
-      const sql = 'SELECT id, name, price, category FROM products WHERE id=($1)'
+      const sql = 'SELECT id, name, price, category FROM products WHERE id = $1'
       // @ts-ignore
       const conn = await client.connect()
 
@@ -89,17 +89,19 @@ export class ProductStore {
     }
   }
 
-  async delete(id: number): Promise<string> {
+  async delete(id: number): Promise<Product[]> {
     try {
-      const sql = 'DELETE FROM products WHERE id=($1)'
+      const sql = 'DELETE FROM products WHERE id = $1 RETURNING *'
       // @ts-ignore
       const conn = await client.connect()
 
-      await conn.query(sql, [id])
+      const result = await conn.query(sql, [id])
+
+      const deletedProduct: Product[] = result.rows
 
       conn.release()
 
-      return 'Product Deleted'
+      return deletedProduct
     } catch (err) {
       throw new Error(`DB error deleting product with id ${id}. Error: ${err}`)
     }
