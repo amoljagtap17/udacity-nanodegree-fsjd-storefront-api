@@ -34,13 +34,14 @@ export class OrderStore {
     }
   }
 
-  async update(o: Order): Promise<Order> {
+  // Update status for a specific order
+  async update(id: number, status: STATUS): Promise<Order> {
     try {
       const sql = 'UPDATE orders SET status = $2 WHERE id = $1 RETURNING *'
       // @ts-ignore
       const conn = await client.connect()
 
-      const result = await conn.query(sql, [o.id, o.status])
+      const result = await conn.query(sql, [id, status])
 
       const order: Order = result.rows[0]
 
@@ -48,9 +49,7 @@ export class OrderStore {
 
       return order
     } catch (err) {
-      throw new Error(
-        `unable to update order (${o.id} ${o.status} ${o.user_id}): ${err}`
-      )
+      throw new Error(`unable to update order (${id} ${status}): ${err}`)
     }
   }
 

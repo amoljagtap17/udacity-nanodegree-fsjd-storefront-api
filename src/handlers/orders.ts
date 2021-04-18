@@ -30,15 +30,9 @@ const update = async (req: Request, res: Response) => {
   }
 
   try {
-    const decodedToken = getDecodedToken(req.headers.authorization!)
-    const order: Order = {
-      id,
-      status,
-      user_id: decodedToken.user.id,
-    }
+    const updatedOrder = await store.update(id, status)
 
-    const updatedOrder = await store.update(order)
-
+    // If returned object is undefined then no records were updted for the given id. Mostly when the id is incorrect.
     if (!updatedOrder) {
       res.status(400)
       res.json({ error: `order with id ${id} not found` })
@@ -57,6 +51,7 @@ const destroy = async (req: Request, res: Response) => {
     const id = parseInt(req.params.id)
     const deletedOrder = await store.delete(id)
 
+    // If returned array is empty then no records were deleted for the given id. Mostly when the id is incorrect.
     if (deletedOrder.length === 0) {
       res.status(400)
       res.json({ error: `order with id ${id} not found` })

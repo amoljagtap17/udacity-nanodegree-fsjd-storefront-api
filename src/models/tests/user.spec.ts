@@ -1,12 +1,10 @@
-import { UserStore } from '../user'
+import { User, UserStore } from '../user'
 
 const store = new UserStore()
 
-const { BCRYPT_PASSWORD, SALT_ROUNDS } = process.env
-const pepper: string = BCRYPT_PASSWORD!
-const saltRounds: string = SALT_ROUNDS!
-
 describe('User Model', () => {
+  let user: User
+
   it('should have an index method', () => {
     expect(store.index).toBeDefined()
   })
@@ -28,16 +26,16 @@ describe('User Model', () => {
   })
 
   it('create method should add a new user', async () => {
-    const result = await store.create({
+    user = await store.create({
       firstname: 'First Name',
       lastname: 'Last Name',
       username: 'User Name',
       password: 'test@password',
     })
 
-    expect(result).toEqual(
+    expect(user).toEqual(
       jasmine.objectContaining({
-        id: 1,
+        id: user.id,
         firstname: 'First Name',
         lastname: 'Last Name',
         username: 'User Name',
@@ -50,7 +48,7 @@ describe('User Model', () => {
 
     expect(result[0]).toEqual(
       jasmine.objectContaining({
-        id: 1,
+        id: user.id,
         firstname: 'First Name',
         lastname: 'Last Name',
         username: 'User Name',
@@ -59,11 +57,11 @@ describe('User Model', () => {
   })
 
   it('show method should return the correct user', async () => {
-    const result = await store.show(1)
+    const result = await store.show(user.id)
 
     expect(result).toEqual(
       jasmine.objectContaining({
-        id: 1,
+        id: user.id,
         firstname: 'First Name',
         lastname: 'Last Name',
         username: 'User Name',
@@ -73,7 +71,7 @@ describe('User Model', () => {
 
   it('update method should update the existing user', async () => {
     const result = await store.update({
-      id: 1,
+      id: user.id,
       firstname: 'Updated First Name',
       lastname: 'Updated Last Name',
       username: 'Updated User Name',
@@ -82,7 +80,7 @@ describe('User Model', () => {
 
     expect(result).toEqual(
       jasmine.objectContaining({
-        id: 1,
+        id: user.id,
         firstname: 'Updated First Name',
         lastname: 'Updated Last Name',
         username: 'Updated User Name',
@@ -91,7 +89,7 @@ describe('User Model', () => {
   })
 
   it('delete method should remove the user', async () => {
-    store.delete(1)
+    store.delete(user.id)
 
     const result = await store.index()
 
