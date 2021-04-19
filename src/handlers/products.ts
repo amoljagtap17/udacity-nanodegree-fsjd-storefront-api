@@ -88,6 +88,17 @@ const getProductsByOrderId = async (req: Request, res: Response) => {
   }
 }
 
+const getTopFiveMostPopularProducts = async (req: Request, res: Response) => {
+  try {
+    const products = await store.getTopFiveMostPopularProducts()
+
+    res.json(products)
+  } catch (error) {
+    res.status(500)
+    res.json({ error: error.toString() })
+  }
+}
+
 export const products_routes = (app: express.Application) => {
   app.get('/products', index)
   app.get('/products/:id', show)
@@ -99,4 +110,5 @@ export const products_routes = (app: express.Application) => {
     verifyAuthToken,
     getProductsByOrderId
   )
+  app.get('/products/top-five-most-popular', getTopFiveMostPopularProducts)
 }

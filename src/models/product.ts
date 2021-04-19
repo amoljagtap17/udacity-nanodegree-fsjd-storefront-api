@@ -113,7 +113,7 @@ export class ProductStore {
   ): Promise<Product[]> {
     try {
       const sql =
-        'SELECT p.id, p.name, p.price, p.category, op.quantity FROM products p INNER JOIN order_products op ON p.id = op.product_id INNER JOIN orders o ON o.id = op.order_id WHERE o.user_id = $1 AND op.order_id = $2;'
+        'SELECT p.id, p.name, p.price, p.category, op.quantity FROM products p INNER JOIN order_products op ON p.id = op.product_id INNER JOIN orders o ON o.id = op.order_id WHERE o.user_id = $1 AND op.order_id = $2'
       // @ts-ignore
       const conn = await client.connect()
 
@@ -127,6 +127,27 @@ export class ProductStore {
     } catch (err) {
       throw new Error(
         `DB error retrieving products (${userId} ${orderId}). Error: ${err}`
+      )
+    }
+  }
+
+  async getTopFiveMostPopularProducts(): Promise<Product[]> {
+    try {
+      const sql =
+        'SELECT p.id, p.name, SUM(op.quantity) as quantity FROM order_products op INNER JOIN products p ON op.product_id = p.id GROUP BY p.id, p.name ORDER BY SUM(op.quantity) DESC LIMIT 5'
+      // @ts-ignore
+      const conn = await client.connect()
+
+      const result = await conn.query(sql)
+
+      const products: Product[] = result.rows
+
+      conn.release()
+
+      return products
+    } catch (err) {
+      throw new Error(
+        `DB error retrieving top 5 most popular products. Error: ${err}`
       )
     }
   }
