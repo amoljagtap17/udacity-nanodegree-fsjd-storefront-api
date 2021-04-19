@@ -101,6 +101,7 @@ const getTopFiveMostPopularProducts = async (req: Request, res: Response) => {
 
 export const products_routes = (app: express.Application) => {
   app.get('/products', index)
+  app.get('/products/top-five-most-popular', getTopFiveMostPopularProducts)
   app.get('/products/:id', show)
   app.post('/products', verifyAuthToken, create)
   app.put('/products/:id', verifyAuthToken, update)
@@ -110,5 +111,4 @@ export const products_routes = (app: express.Application) => {
     verifyAuthToken,
     getProductsByOrderId
   )
-  app.get('/products/top-five-most-popular', getTopFiveMostPopularProducts)
 }

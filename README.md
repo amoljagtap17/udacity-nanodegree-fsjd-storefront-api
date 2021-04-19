@@ -1,3 +1,238 @@
+# Full Stack JavaScript Developer Nanodegree - Storefront API Project
+
+## Description
+
+This application provides API endpoints to
+
+- CREATE / READ / UPDATE / DELETE **`users`** data
+- CREATE / READ / UPDATE / DELETE **`products`** data
+- CREATE / UPDATE / DELETE **`orders`** data
+
+## Project features
+
+This application provides the following API routes
+
+### Product
+
+- `Index: '/products' [GET]`
+
+  > http://localhost:3000/products
+
+- `Show: '/products/:id' [GET]`
+
+  > http://localhost:3000/products/1
+
+- `Create [token required]: '/products' [POST]`
+
+  > http://localhost:3000/products
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "name": "xperia",
+    "price": 45000,
+    "category": "mobiles"
+  }
+  ```
+
+- `Update [token required]: '/products/:id' [PUT]`
+
+  > http://localhost:3000/products/1
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "name": "xperia",
+    "price": 46000,
+    "category": "mobiles"
+  }
+  ```
+
+- `Destroy [token required]: '/products/:id' [DELETE]`
+
+  > http://localhost:3000/products/1
+
+- `[OPTIONAL] Top 5 most popular products: 'products/top-five-most-popular' [GET]`
+
+  > http://localhost:3000/products/top-five-most-popular
+
+- `Get Products by order id for a user [token required]: '/users/:userId/orders/:orderId/products' [GET]`
+
+  > http://localhost:3000/users/1/orders/1/products
+
+### Users
+
+- `Index [token required]: '/users' [GET]`
+
+  > http://localhost:3000/users
+
+- `Show [token required]: '/users/:id' [GET]`
+
+  > http://localhost:3000/users/1
+
+- `Create N[token required]:'/users' [POST]`
+
+  > http://localhost:3000/users
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "firstname": "test",
+    "lastname": "user",
+    "username": "testuser",
+    "password": "testpassword"
+  }
+  ```
+
+- `Create root user:'/create-root-user' [POST]`
+
+  > http://localhost:3000/create-root-user
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "firstname": "admin",
+    "lastname": "user",
+    "username": "admin",
+    "password": "testpassword"
+  }
+  ```
+
+- `Authenticate:'/users/login' [POST]`
+
+  > http://localhost:3000/users/login
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "username": "testuser",
+    "password": "testpassword"
+  }
+  ```
+
+- `Update [token required]: '/users/:id' [PUT]`
+
+  > http://localhost:3000/users/1
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "firstname": "fName",
+    "lastname": "lName",
+    "username": "testuser",
+    "password": "testpassword"
+  }
+  ```
+
+- `Destroy [token required]: '/users/:id' [DELETE]`
+
+  > http://localhost:3000/users/1
+
+### Orders
+
+- `Current Order by user (args: user id)[token required]: '/users/:userId/orders/:orderId' [GET]`
+
+  > http://localhost:3000/users/1/orders/1
+
+- `Create [token required]: '/orders' [POST]`
+
+  > http://localhost:3000/orders
+
+  Sample JSON to be passed in body [Optional]
+
+  ```
+  {}
+  ```
+
+- `Update [token required]: '/orders/:id' [PUT]`
+
+  > http://localhost:3000/orders/1
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "status": "COMPLETE"
+  }
+  ```
+
+- `Destroy [token required]: '/orders/:id' [DELETE]`
+
+  > http://localhost:3000/orders/1
+
+- `Add Product to Order [token required]: '/orders/:id/products' [POST]`
+
+  > http://localhost:3000/orders/1/products
+
+  Sample JSON to be passed in body
+
+  ```
+  {
+    "productId": 4,
+    "quantity": 5
+  }
+  ```
+
+## Database Design
+
+The following tables are created in the _postgres_ database
+
+- users
+
+  ```
+  | Column Name | Data Type             |
+  | ----------- | --------------------- |
+  | id          | integer (PRIMARY KEY) |
+  | firstname   | varchar               |
+  | lastname    | varchar               |
+  | username    | varchar               |
+  | password    | varchar               |
+  ```
+
+- orders
+
+  ```
+  | Column Name | Data Type                            |
+  | ----------- | ------------------------------------ |
+  | id          | integer (PRIMARY KEY)                |
+  | status      | varchar                              |
+  | user_id     | integer (FOREIGN KEY to users table) |
+  ```
+
+- products
+
+  ```
+  | Column Name | Data Type              |
+  | ----------- | ---------------------- |
+  | id          | integer (PRIMARY KEY)  |
+  | name        | varchar                |
+  | price       | integer                |
+  | category    | varchar                |
+  ```
+
+- order_products
+
+  ```
+  | Column Name | Data Type                               |
+  | ----------- | --------------------------------------- |
+  | id          | integer (PRIMARY KEY)                   |
+  | quantity    | integer                                 |
+  | order_id    | integer (FOREIGN KEY to orders table)   |
+  | product_id  | integer (FOREIGN KEY to products table) |
+  ```
+
+## Project setup
+
+---
+
+> Original README.md
+
 # Storefront Backend Project
 
 ## Getting Started

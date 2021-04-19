@@ -134,7 +134,7 @@ export class ProductStore {
   async getTopFiveMostPopularProducts(): Promise<Product[]> {
     try {
       const sql =
-        'SELECT p.id, p.name, SUM(op.quantity) as quantity FROM order_products op INNER JOIN products p ON op.product_id = p.id GROUP BY p.id, p.name ORDER BY SUM(op.quantity) DESC LIMIT 5'
+        'SELECT p.id, p.name, p.price, p.category FROM order_products op INNER JOIN products p ON op.product_id = p.id GROUP BY p.id ORDER BY SUM(op.quantity) DESC LIMIT 5'
       // @ts-ignore
       const conn = await client.connect()
 
