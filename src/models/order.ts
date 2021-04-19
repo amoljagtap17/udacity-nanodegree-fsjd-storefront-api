@@ -13,6 +13,25 @@ export type Order = {
 }
 
 export class OrderStore {
+  async show(userId: number, orderId: number): Promise<Order> {
+    try {
+      const sql =
+        'SELECT id, status, user_id FROM orders WHERE id = $1 AND user_id = $2'
+      // @ts-ignore
+      const conn = await client.connect()
+
+      const result = await conn.query(sql, [orderId, userId])
+
+      const order: Order = result.rows[0]
+
+      conn.release()
+
+      return order
+    } catch (err) {
+      throw new Error(`DB error retrieving products. Error: ${err}`)
+    }
+  }
+
   async create(userId: number): Promise<Order> {
     try {
       const sql =

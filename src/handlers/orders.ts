@@ -5,6 +5,19 @@ import { getDecodedToken } from '../utils/utils'
 
 const store = new OrderStore()
 
+const index = async (req: Request, res: Response) => {
+  const userId = parseInt(req.params.userId)
+  const orderId = parseInt(req.params.orderId)
+
+  try {
+    const order = await store.show(userId, orderId)
+    res.json(order)
+  } catch (error) {
+    res.status(500)
+    res.json({ error: error.toString() })
+  }
+}
+
 const create = async (req: Request, res: Response) => {
   try {
     const decodedToken = getDecodedToken(req.headers.authorization!)
@@ -81,6 +94,7 @@ const addProduct = async (req: Request, res: Response) => {
 }
 
 export const orders_routes = (app: express.Application) => {
+  app.get('/users/:userId/orders/:orderId', index)
   app.post('/orders', verifyAuthToken, create)
   app.put('/orders/:id', verifyAuthToken, update)
   app.delete('/orders/:id', verifyAuthToken, destroy)
