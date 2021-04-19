@@ -65,7 +65,7 @@ This application provides the following API routes
 
   > http://localhost:3000/products/1
 
-- `[OPTIONAL] Top 5 most popular products: 'products/top-five-most-popular' [GET]`
+- `[OPTIONAL] Top 5 most popular products: '/products/top-five-most-popular' [GET]`
 
   > http://localhost:3000/products/top-five-most-popular
 
