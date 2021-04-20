@@ -1,10 +1,10 @@
-import { Order, OrderStore, STATUS } from '../order'
-import { User, UserStore } from '../user'
+import { Order, OrderStore, STATUS } from '../../src/models/order'
+import { User, UserStore } from '../../src/models/user'
 
 const orderStore = new OrderStore()
 const userStore = new UserStore()
 
-describe('Order Model', () => {
+describe('Order Model ', () => {
   let user: User
   let order: Order
   const uuid = new Date().getTime()

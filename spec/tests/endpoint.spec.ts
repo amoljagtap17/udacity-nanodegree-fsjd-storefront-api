@@ -1,9 +1,9 @@
 import supertest from 'supertest'
-import { app } from '../../server'
-import { getDecodedToken } from '../../utils/utils'
-import { User } from '../../models/user'
-import { Order, STATUS } from '../../models/order'
-import { Product } from '../../models/product'
+import { app } from '../../src/server'
+import { getDecodedToken } from '../../src/utils/utils'
+import { User } from '../../src/models/user'
+import { Order, STATUS } from '../../src/models/order'
+import { Product } from '../../src/models/product'
 
 const request = supertest(app)
 

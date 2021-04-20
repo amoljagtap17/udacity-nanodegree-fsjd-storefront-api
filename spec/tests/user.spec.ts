@@ -1,8 +1,8 @@
-import { User, UserStore } from '../user'
+import { User, UserStore } from '../../src/models/user'
 
 const store = new UserStore()
 
-describe('User Model', () => {
+describe('User Model ', () => {
   let user: User
 
   it('should have an index method', () => {

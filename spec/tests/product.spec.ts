@@ -1,4 +1,4 @@
-import { Product, ProductStore } from '../product'
+import { Product, ProductStore } from '../../src/models/product'
 
 const productStore = new ProductStore()
 
@@ -8,7 +8,7 @@ const payload = {
   category: 'cat 1',
 }
 
-describe('Product Model', () => {
+describe('Product Model ', () => {
   let product: Product
 
   it('should have an index method', () => {
