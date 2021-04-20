@@ -48,3 +48,51 @@ These are the notes from a meeting with the frontend developer that describe wha
 - quantity of each product in the order
 - user_id
 - status of order (active or complete)
+
+## Database Schema
+
+The following tables are created in the _postgres_ database
+
+- users
+
+  ```
+  | Column Name | Data Type             |
+  | ----------- | --------------------- |
+  | id          | integer (PRIMARY KEY) |
+  | firstname   | varchar               |
+  | lastname    | varchar               |
+  | username    | varchar               |
+  | password    | varchar               |
+  ```
+
+- orders
+
+  ```
+  | Column Name | Data Type                            |
+  | ----------- | ------------------------------------ |
+  | id          | integer (PRIMARY KEY)                |
+  | status      | varchar                              |
+  | user_id     | integer (FOREIGN KEY to users table) |
+  ```
+
+- products
+
+  ```
+  | Column Name | Data Type              |
+  | ----------- | ---------------------- |
+  | id          | integer (PRIMARY KEY)  |
+  | name        | varchar                |
+  | price       | integer                |
+  | category    | varchar                |
+  ```
+
+- order_products
+
+  ```
+  | Column Name | Data Type                               |
+  | ----------- | --------------------------------------- |
+  | id          | integer (PRIMARY KEY)                   |
+  | quantity    | integer                                 |
+  | order_id    | integer (FOREIGN KEY to orders table)   |
+  | product_id  | integer (FOREIGN KEY to products table) |
+  ```

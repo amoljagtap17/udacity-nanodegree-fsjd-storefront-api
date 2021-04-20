@@ -5,7 +5,7 @@ import { users_routes } from './handlers/users'
 import { products_routes } from './handlers/products'
 import { orders_routes } from './handlers/orders'
 
-const app: express.Application = express()
+export const app: express.Application = express()
 const address: string = '0.0.0.0:3000'
 
 app.use(bodyParser.json())

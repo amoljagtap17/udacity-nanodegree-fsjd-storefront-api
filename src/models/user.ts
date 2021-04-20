@@ -109,17 +109,19 @@ export class UserStore {
     }
   }
 
-  async delete(id: number): Promise<string> {
+  async delete(id: number): Promise<User[]> {
     try {
-      const sql = 'DELETE FROM users WHERE id=($1)'
+      const sql = 'DELETE FROM users WHERE id=($1) RETURNING *'
       // @ts-ignore
       const conn = await client.connect()
 
-      await conn.query(sql, [id])
+      const result = await conn.query(sql, [id])
+
+      const deletedUser: User[] = result.rows
 
       conn.release()
 
-      return 'User Deleted'
+      return deletedUser
     } catch (err) {
       throw new Error(`DB error deleting user with id ${id}. Error: ${err}`)
     }

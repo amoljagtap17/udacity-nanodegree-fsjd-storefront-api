@@ -46,7 +46,9 @@ describe('User Model', () => {
   it('index method should return a list of users', async () => {
     const result = await store.index()
 
-    expect(result[0]).toEqual(
+    const filteredResult = result.filter((item) => user.id === item.id)
+
+    expect(filteredResult[0]).toEqual(
       jasmine.objectContaining({
         id: user.id,
         firstname: 'First Name',
@@ -89,10 +91,15 @@ describe('User Model', () => {
   })
 
   it('delete method should remove the user', async () => {
-    store.delete(user.id)
+    const result = await store.delete(user.id)
 
-    const result = await store.index()
-
-    expect(result).toEqual([])
+    expect(result[0]).toEqual(
+      jasmine.objectContaining({
+        id: user.id,
+        firstname: 'Updated First Name',
+        lastname: 'Updated Last Name',
+        username: 'Updated User Name',
+      })
+    )
   })
 })

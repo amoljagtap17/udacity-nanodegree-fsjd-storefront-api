@@ -190,7 +190,7 @@ This application provides the following API routes
   }
   ```
 
-## Database Design
+## Database Schema
 
 The following tables are created in the _postgres_ database
 
