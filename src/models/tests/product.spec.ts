@@ -44,7 +44,9 @@ describe('Product Model', () => {
   it('index method should return a list of products', async () => {
     const result = await productStore.index()
 
-    expect(result).toEqual([
+    const filteredProduct = result.filter((item) => item.id === product.id)
+
+    expect(filteredProduct).toEqual([
       {
         id: product.id,
         ...payload,

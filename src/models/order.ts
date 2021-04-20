@@ -12,6 +12,13 @@ export type Order = {
   user_id: number
 }
 
+export type OrderProduct = {
+  id: number
+  quantity: number
+  order_id: number
+  product_id: number
+}
+
 export class OrderStore {
   async show(userId: number, orderId: number): Promise<Order> {
     try {
@@ -94,7 +101,7 @@ export class OrderStore {
     quantity: number,
     orderId: number,
     productId: number
-  ): Promise<Order> {
+  ): Promise<OrderProduct> {
     // get order to see if it is open
     try {
       const ordersql = 'SELECT * FROM orders WHERE id=($1)'
@@ -124,7 +131,7 @@ export class OrderStore {
 
       const result = await conn.query(sql, [quantity, orderId, productId])
 
-      const order: Order = result.rows[0]
+      const order: OrderProduct = result.rows[0]
 
       conn.release()
 
