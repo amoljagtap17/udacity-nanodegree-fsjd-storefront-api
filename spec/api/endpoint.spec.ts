@@ -32,51 +32,6 @@ describe('Test endpoint responses : ', () => {
   })
 
   /* PRODUCTS TESTS */
-  it('creates new product successfully using the token for root user', async () => {
-    const response = await request
-      .post('/products')
-      .send({
-        name: 'p 1',
-        price: 56,
-        category: 'c 1',
-      })
-      .set('Accept', 'application/json')
-      .set('Authorization', `${authHeader}`)
-
-    product = response.body
-
-    expect(product).toEqual(
-      jasmine.objectContaining({
-        name: 'p 1',
-        price: 56,
-        category: 'c 1',
-      })
-    )
-  })
-
-  it('gets list of products successfully with auth token not passed in request', async () => {
-    const response = await request
-      .get('/products')
-      .set('Accept', 'application/json')
-
-    expect(response.status).toBe(200)
-    expect(response.body).toBeTruthy()
-    expect(response.body.length).toEqual(1)
-  })
-
-  it('gets details of a specific product successfully with auth token not passed in request', async () => {
-    const response = await request
-      .get(`/products/${product.id}`)
-      .set('Accept', 'application/json')
-
-    expect(response.body).toEqual(
-      jasmine.objectContaining({
-        name: 'p 1',
-        price: 56,
-        category: 'c 1',
-      })
-    )
-  })
 
   it('product can be added successfully to an order with auth token passed in request', async () => {
     const response = await request

@@ -6,7 +6,7 @@ const request = supertest(app)
 
 const { firstname, lastname, username, password } = testUserData
 
-describe('Test endpoint responses for Users : ', () => {
+describe('Test endpoint responses for user resource : ', () => {
   let authHeader: string
   let userId: string
 
