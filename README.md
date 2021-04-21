@@ -266,14 +266,12 @@ For connecting to the database please follow the following steps:
 - Grant for dev database
 
 ```
-> \c storefront_dev
 > GRANT ALL PRIVILEGES ON DATABASE storefront_dev TO admin;
 ```
 
 - Grant for test database
 
 ```
-> \c storefront_test
 > GRANT ALL PRIVILEGES ON DATABASE storefront_test TO admin;
 ```
 
