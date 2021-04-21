@@ -1,6 +1,7 @@
 import express, { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
 import { getProductsByOrderId } from '../handlers/products'
+import { index as orderIndex } from '../handlers/orders'
 import { User, UserStore } from '../models/user'
 import { verifyAuthToken } from '../middlewares/auth'
 
@@ -121,4 +122,5 @@ export const users_routes = (app: express.Application) => {
     verifyAuthToken,
     getProductsByOrderId
   )
+  app.get('/users/:userId/orders/:orderId', orderIndex)
 }
