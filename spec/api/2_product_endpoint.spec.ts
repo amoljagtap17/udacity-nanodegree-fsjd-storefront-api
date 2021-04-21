@@ -9,7 +9,7 @@ const request = supertest(app)
 const { name, price, category } = testProductData
 const { username, password } = testUserData
 
-describe('Test endpoint responses for product resource : ', () => {
+describe('Test endpoint responses for product resource', () => {
   let authHeader: string
   let product: Product
 

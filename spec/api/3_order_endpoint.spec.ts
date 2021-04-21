@@ -10,7 +10,7 @@ const request = supertest(app)
 const { name, price, category } = testProductData
 const { username, password } = testUserData
 
-describe('Test endpoint responses for order resource : ', () => {
+describe('Test endpoint responses for order resource', () => {
   let authHeader: string
   let userId: string
   let order: Order
