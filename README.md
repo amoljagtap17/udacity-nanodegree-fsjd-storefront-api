@@ -242,22 +242,62 @@ The following tables are created in the _postgres_ database
 
 For connecting to the database please follow the following steps:
 
-1. Rename the `.env_sample.txt` file to `.env`
-2. Update the values for the different environment variables in this `.env` file (_Note: Few are predefined_).
-3. Create two new databases running the following SQL in postgres shell
+1. Connect to the default postgres database as the server's root user
+
+```
+> psql -U postgres
+```
+
+2. In psql run the following to create a user (Replace user name and password as needed)
+
+```
+> CREATE USER admin WITH PASSWORD 'adminpass';
+```
+
+3. In psql run the following to create the dev and test database
 
 ```
 > CREATE database storefront_dev;
 > CREATE database storefront_test;
 ```
 
-4. Install the `db-migrate` npm package globally using the following command (append `sudo` for mac systems)
+4. Connect to the databases and grant all privileges (replace the user `admin` if different)
+
+- Grant for dev database
+
+```
+> \c storefront_dev
+> GRANT ALL PRIVILEGES ON DATABASE storefront_dev TO admin;
+```
+
+- Grant for test database
+
+```
+> \c storefront_dev
+> GRANT ALL PRIVILEGES ON DATABASE storefront_test TO admin;
+```
+
+5. Rename the `.env_sample.txt` file to `.env`
+6. Update the values for the different environment variables in this `.env` file as follows:
+
+- POSTGRES_HOST=127.0.0.1 (host if postgres is running locally else update)
+- POSTGRES_PORT=5432
+- POSTGRES_DB=storefront_dev
+- POSTGRES_TEST_DB=storefront_test
+- POSTGRES_USER=admin (or the one created above)
+- POSTGRES_PASSWORD=adminpass (or the one set above)
+- ENV=dev
+- BCRYPT_PASSWORD=secretpass (change to alphanumeric value)
+- SALT_ROUNDS=10
+- TOKEN_SECRET=tokensecret (change to alphanumeric value)
+
+7. Install the `db-migrate` npm package globally using the following command (append `sudo` for mac systems)
 
 ```
 > npm install -g db-migrate
 ```
 
-5. Run the `up` migrations from the project folder using the followign command
+8. Run the `up` migrations from the project folder using the following command
 
 ```
 > db-migrate up
@@ -273,7 +313,7 @@ Download the project zip file, unzip it & install the dependencies using the fol
 npm install
 ```
 
-To run the application
+To run the application on PORT 3000
 
 ```
 npm run watch
