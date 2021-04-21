@@ -273,8 +273,20 @@ For connecting to the database please follow the following steps:
 - Grant for test database
 
 ```
-> \c storefront_dev
+> \c storefront_test
 > GRANT ALL PRIVILEGES ON DATABASE storefront_test TO admin;
+```
+
+- Change owner of dev database
+
+```
+> ALTER DATABASE storefront_dev OWNER TO admin;
+```
+
+- Change owner of test database
+
+```
+> ALTER DATABASE storefront_test OWNER TO admin;
 ```
 
 5. Rename the `.env_sample.txt` file to `.env`
