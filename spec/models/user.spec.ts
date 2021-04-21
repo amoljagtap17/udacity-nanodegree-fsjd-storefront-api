@@ -17,7 +17,7 @@ describe('User Model ', () => {
     expect(store.create).toBeDefined()
   })
 
-  it('should have a update method', () => {
+  it('should have an update method', () => {
     expect(store.update).toBeDefined()
   })
 

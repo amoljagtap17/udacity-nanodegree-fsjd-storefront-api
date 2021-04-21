@@ -23,7 +23,7 @@ describe('Product Model ', () => {
     expect(productStore.create).toBeDefined()
   })
 
-  it('should have a update method', () => {
+  it('should have an update method', () => {
     expect(productStore.update).toBeDefined()
   })
 

@@ -26,7 +26,7 @@ describe('Order Model ', () => {
     expect(orderStore.create).toBeDefined()
   })
 
-  it('should have a update method', () => {
+  it('should have an update method', () => {
     expect(orderStore.update).toBeDefined()
   })
 
