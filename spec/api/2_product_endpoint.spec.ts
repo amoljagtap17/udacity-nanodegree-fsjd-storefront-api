@@ -10,7 +10,6 @@ const { name, price, category } = testProductData
 const { username, password } = testUserData
 
 describe('Test endpoint responses for product resource : ', () => {
-  let userId: number
   let authHeader: string
   let product: Product
 
@@ -20,7 +19,6 @@ describe('Test endpoint responses for product resource : ', () => {
       password,
     })
 
-    userId = response.body.userId
     authHeader = `Bearer ${response.body.token}`
   })
 

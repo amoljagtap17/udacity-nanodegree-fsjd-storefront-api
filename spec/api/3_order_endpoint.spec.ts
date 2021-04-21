@@ -1,21 +1,48 @@
 import supertest from 'supertest'
 import { app } from '../../src/server'
-import { getDecodedToken } from '../../src/utils/utils'
-import { User } from '../../src/models/user'
-import { Order, STATUS } from '../../src/models/order'
+import { testProductData } from '../mock/product'
+import { testUserData } from '../mock/user'
 import { Product } from '../../src/models/product'
+import { STATUS, Order } from '../../src/models/order'
 
 const request = supertest(app)
 
-describe('Test endpoint responses : ', () => {
-  let token: string
+const { name, price, category } = testProductData
+const { username, password } = testUserData
+
+describe('Test endpoint responses for order resource : ', () => {
   let authHeader: string
-  let rootUser: Omit<User, 'password'>
+  let userId: string
   let order: Order
   let product: Product
 
-  /* ORDERS TESTS */
-  it('creates new order successfully using the token for root user', async () => {
+  beforeAll(async () => {
+    const response = await request.post('/users/login').send({
+      username,
+      password,
+    })
+
+    authHeader = `Bearer ${response.body.token}`
+    userId = response.body.userId
+
+    const res = await request
+      .post('/products')
+      .send({
+        name,
+        price,
+        category,
+      })
+      .set('Accept', 'application/json')
+      .set('Authorization', authHeader)
+
+    product = res.body
+  })
+
+  afterAll(async () => {
+    await request.delete(`/products/${product.id}`)
+  })
+
+  it('creates new order successfully', async () => {
     const response = await request
       .post('/orders')
       .set('Accept', 'application/json')
@@ -26,12 +53,10 @@ describe('Test endpoint responses : ', () => {
     expect(order).toEqual(
       jasmine.objectContaining({
         status: STATUS.open,
-        user_id: rootUser.id,
+        user_id: userId,
       })
     )
   })
-
-  /* PRODUCTS TESTS */
 
   it('product can be added successfully to an order with auth token passed in request', async () => {
     const response = await request
@@ -54,11 +79,9 @@ describe('Test endpoint responses : ', () => {
 
   it('gets current order for an user successfully with auth token passed in request', async () => {
     const response = await request
-      .get(`/users/${rootUser.id}/orders/${order.id}/products`)
+      .get(`/users/${userId}/orders/${order.id}/products`)
       .set('Accept', 'application/json')
       .set('Authorization', `${authHeader}`)
-
-    const { name, price, category } = product
 
     expect(response.body[0]).toEqual(
       jasmine.objectContaining({
