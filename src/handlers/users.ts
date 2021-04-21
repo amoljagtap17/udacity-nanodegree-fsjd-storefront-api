@@ -1,5 +1,6 @@
 import express, { Request, Response } from 'express'
 import jwt from 'jsonwebtoken'
+import { getProductsByOrderId } from '../handlers/products'
 import { User, UserStore } from '../models/user'
 import { verifyAuthToken } from '../middlewares/auth'
 
@@ -115,4 +116,9 @@ export const users_routes = (app: express.Application) => {
   app.put('/users/:id', verifyAuthToken, update)
   app.delete('/users/:id', verifyAuthToken, destroy)
   app.post('/users/login', authenticate)
+  app.get(
+    '/users/:userId/orders/:orderId/products',
+    verifyAuthToken,
+    getProductsByOrderId
+  )
 }

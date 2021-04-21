@@ -74,7 +74,7 @@ const destroy = async (req: Request, res: Response) => {
   }
 }
 
-const getProductsByOrderId = async (req: Request, res: Response) => {
+export const getProductsByOrderId = async (req: Request, res: Response) => {
   const userId = parseInt(req.params.userId)
   const orderId = parseInt(req.params.orderId)
 
@@ -106,9 +106,4 @@ export const products_routes = (app: express.Application) => {
   app.post('/products', verifyAuthToken, create)
   app.put('/products/:id', verifyAuthToken, update)
   app.delete('/products/:id', verifyAuthToken, destroy)
-  app.get(
-    '/users/:userId/orders/:orderId/products',
-    verifyAuthToken,
-    getProductsByOrderId
-  )
 }
