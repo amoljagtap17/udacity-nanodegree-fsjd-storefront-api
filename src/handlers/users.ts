@@ -48,7 +48,7 @@ const create = async (req: Request, res: Response) => {
       tokenSecret
     )
 
-    res.json(token)
+    res.json({ userId: id, token })
   } catch (error) {
     res.status(400)
     res.json({ error: error.toString() })
@@ -102,7 +102,7 @@ const authenticate = async (req: Request, res: Response) => {
       tokenSecret
     )
 
-    res.json(token)
+    res.json({ userId: id, token })
   } catch (error) {
     res.status(401)
     res.json({ error: error.toString() })
