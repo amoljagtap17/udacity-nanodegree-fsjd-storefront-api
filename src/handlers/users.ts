@@ -111,9 +111,8 @@ const authenticate = async (req: Request, res: Response) => {
 export const users_routes = (app: express.Application) => {
   app.get('/users', verifyAuthToken, index)
   app.get('/users/:id', verifyAuthToken, show)
-  app.post('/create-root-user', create)
-  app.post('/users/login', authenticate)
-  app.post('/users', verifyAuthToken, create)
+  app.post('/users', create)
   app.put('/users/:id', verifyAuthToken, update)
   app.delete('/users/:id', verifyAuthToken, destroy)
+  app.post('/users/login', authenticate)
 }

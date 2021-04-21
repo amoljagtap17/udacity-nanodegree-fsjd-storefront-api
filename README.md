@@ -83,7 +83,7 @@ This application provides the following API routes
 
   > http://localhost:3000/users/1
 
-- `Create N[token required]:'/users' [POST]`
+- `Create: '/users' [POST]`
 
   > http://localhost:3000/users
 
@@ -94,21 +94,6 @@ This application provides the following API routes
     "firstname": "test",
     "lastname": "user",
     "username": "testuser",
-    "password": "testpassword"
-  }
-  ```
-
-- `Create root user:'/create-root-user' [POST]`
-
-  > http://localhost:3000/create-root-user
-
-  Sample JSON to be passed in body
-
-  ```
-  {
-    "firstname": "admin",
-    "lastname": "user",
-    "username": "admin",
     "password": "testpassword"
   }
   ```
